@@ -1,0 +1,3 @@
+convert all TS to JS using
+
+>> tsc --outDir ./dist --rootDir ./src 
