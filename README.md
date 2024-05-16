@@ -6,9 +6,9 @@
 
 ## Install tsc first
 For npm,
-- >> npm i --g typescript
+>> npm i --g typescript
 For pnpm,
-- >>  pnpm i --g typescript
+>>  pnpm i --g typescript
 
 ## convert all TS to JS using [ run it from the root folder ]
 
@@ -25,8 +25,8 @@ For pnpm,
 ## To develop altogehter
 
 - you need to run the server and TS watch together
-  >> tsc --watch
-  >> pnpm run dev
+  - tsc --watch
+  - pnpm run dev
 
 ## Other integrations:
 - Mongoose
