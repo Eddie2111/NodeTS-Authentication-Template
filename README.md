@@ -22,6 +22,11 @@ for npm
 For pnpm,
 >> pnpm run dev
 
+## To develop altogehter
+
+- you need to run the server and TS watch together
+  >> tsc --watch
+  >> pnpm run dev
 
 ## Other integrations:
 - Mongoose
