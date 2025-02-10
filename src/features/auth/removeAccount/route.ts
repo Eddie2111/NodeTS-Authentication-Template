@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 
-import { userPropsAccountSchema, ZodError } from '../../../schema/validation/user.validation';
-import { ErrorHandler } from '../../../templates/error';
-import { successResponse } from '../../../templates/responses';
+import { ErrorHandler } from '@/templates/error';
+import { successResponse } from '@/templates/responses';
 import RemoveAccountController from './removeAccount.controller';
+import { userAccountSchema } from '@/schema/validation/user.validation';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router
   .post( async(req: Request, res: Response) => {
 
     try {
-      const value = userPropsAccountSchema.parse(req.body);
+      const value = userAccountSchema.parse(req.body);
       const operation = await RemoveAccountController(value);
       res.json({ 
         status: operation ? 200 : 400,
@@ -29,4 +29,3 @@ router
   });
 
 module.exports = router;
-//
