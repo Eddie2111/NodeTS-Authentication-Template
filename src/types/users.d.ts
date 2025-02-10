@@ -1,21 +1,13 @@
+import { z } from "zod";
 
-export interface userProps {
-  serial: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  active: boolean;
-}
+import { 
+    userValidationSchema, 
+    userLoginSchema, 
+    userAccountSchema, 
+    userProfileSchema 
+} from "@/schema/validation/user.validation";
 
-export interface userLoginProps {
-  email: string;
-  password: string;
-}
-
-export interface useLoginResponseProps {
-  serial:string;
-  email:srting;
-  active:boolean | null;
-  password:string;
-}
+export type TUser = z.infer<typeof userValidationSchema>;
+export type TUserLogin = z.infer<typeof userLoginSchema>;
+export type TUserAccount = z.infer<typeof userAccountSchema>;
+export type TUserProfile = z.infer<typeof userProfileSchema>;

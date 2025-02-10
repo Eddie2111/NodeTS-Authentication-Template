@@ -1,16 +1,16 @@
 import argon2 from "argon2";
 import dotenv from 'dotenv';
-import {z} from "zod";
 import type {Users} from "@prisma/client";
 
-import { getRedisInstance } from "../../../lib/ioredis";
-import prisma from "../../../lib/prisma";
-import { ZodError, userPropsAccountSchema } from "../../../schema/validation/user.validation";
-import { randomInt } from "../../../utils/IDGenerator";
+import { getRedisInstance } from "@/lib/ioredis";
+import prisma from "@/lib/prisma";
+
+import { randomInt } from "@/utils/IDGenerator";
+import { TUserAccount } from "@/types/users";
 
 dotenv.config();
 
-export async function forgotPasswordTrigger(data: Partial<z.infer<typeof userPropsAccountSchema>>): Promise<boolean>{
+export async function forgotPasswordTrigger(data: TUserAccount): Promise<boolean>{
     try{
         const redis = getRedisInstance();
         const code = randomInt();

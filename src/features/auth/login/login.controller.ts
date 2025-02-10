@@ -1,52 +1,43 @@
 import argon2 from "argon2";
-import type { Response } from "express";
 import jwt from "jsonwebtoken";
+
+import { getOneUser } from "./login.repository";
+
+import type { TUserLogin } from "@/types/users";
+import type { Response } from "express";
 import type { Users } from "@prisma/client";
+import { envInstance } from "@/lib/environment";
 
-import prisma from "../../../lib/prisma";
-import { userPropsLoginSchema } from "../../../schema/validation/user.validation";
-import { idGenerate } from "../../../utils/IDGenerator";
-
-export default async function LoginUser(data: Partial<Users | null>, res:Response) {
-  try {
-    const response: Partial<Users | null> = await prisma.users.findUnique({
-        where: {
-            email: data?.email ?? ""
-        },
-        select: {
-            serial: true,
-            email: true,
-            active: true,
-            password: true
-        },
-    })
-    const passwordMatch = await argon2.verify(response?.password ?? "", data?.password ?? "");
-    console.log(response?.password , data?.password );
-    if (passwordMatch) {
-        const payload = {
-            serial: response?.serial,
-            email: response?.email
+export default async function LoginUser(data: TUserLogin, res: Response) {
+    try {
+        const getUser: Partial<Users | null> = await getOneUser(data);
+        if (!getUser) return false;
+        const passwordMatch = await argon2.verify(getUser.password ?? "", data.password);
+        if (passwordMatch) {
+            const payload = {
+                serial: getUser?.serial,
+                email: getUser?.email
+            }
+            const secret = envInstance.getEnvironmentVariable("JWT_SECRET");
+            const token: string = jwt.sign(payload, secret, { expiresIn: "1h" });
+            res.cookie('user', token, {
+                httpOnly: true,
+                secure: true,
+            });
+            res.json({
+                data: { payload, token },
+                message: "login success",
+                status: 200
+            })
+        } else {
+            res.json({
+                data: {},
+                message: "login failed",
+                status: 400
+            })
         }
-        const secret = process.env.SECRET as string ?? "secret";
-        const token:string = jwt.sign(payload, secret);
-        res.cookie('user', payload, {
-            httpOnly: true,
-            secure: true,
-        });
-        res.json({
-            data: payload,
-            message:"login success",
-            status: 200
-        })
-    } else {
-        res.json({
-            data: {},
-            message:"login failed",
-            status: 400
-        })
+    } catch (err: unknown) {
+        console.log(err);
+        return false;
     }
-  } catch (err: unknown) {
-    console.log(err);
-    return false;
-  }
 }

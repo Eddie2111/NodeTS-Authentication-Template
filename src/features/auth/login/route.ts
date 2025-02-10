@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 
-import { userPropsLoginSchema, ZodError } from "../../../schema/validation/user.validation";
-import { ErrorHandler } from '../../../templates/error';
+import { userLoginSchema } from "@/schema/validation/user.validation";
+import { ErrorHandler } from '@/templates/error';
 import LoginUser from "./login.controller";
 
 const router = express.Router();
@@ -14,11 +14,10 @@ router
   .post(async (req: Request, res: Response) => {
     try {
       const value = req.body;
-      const filterValue = userPropsLoginSchema.parse(value);
-      return await LoginUser(filterValue,res);
+      const filterValue = userLoginSchema.parse(value);
+      await LoginUser(filterValue,res);
     } catch (err: unknown) {
-      // Error Handling here
-      ErrorHandler(err,res);
+        ErrorHandler(err,res);
     }
   });
 

@@ -1,6 +1,6 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import fs from "fs";
 import morgan from "morgan";
 import path from "path";
@@ -8,15 +8,12 @@ import path from "path";
 import { corsOptions, sessionSettings } from "./configs";
 import { Connect_cache } from "./lib/ioredis";
 import { Mongo_Connect } from "./lib/mongo";
-
-("use strict");
+import { envInstance } from "./lib/environment";
 
 dotenv.config();
 
 const app = express();
 
-const port: string = (process.env.PORT as string) ?? "3100";
-const redis: string = (process.env.redis_url as string) ?? "redis://localhost:6379";
 const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
 
 app.use(morgan("combined", { stream: accessLogStream }));
@@ -36,8 +33,21 @@ app.use("/removeAccount", require("./features/auth/removeAccount/route"));
 app.use("/activeAccount", require("./features/auth/activateAccount/route"));
 app.use("/deactiveAccount", require("./features/auth/deactiveAccount/route"));
 
-app.listen(parseInt(port), async () => {
-  await Mongo_Connect();
-  await Connect_cache(redis);
-  console.log("server →", port);
-});
+
+/*
+This is the startpoint of the server.
+Mongo and Redis switch is provided here.
+Only use the one you need and you may comment out or remove the switches as per your choice
+*/
+
+async function startUp() { 
+  await envInstance.init();
+}
+startUp().then(() => {
+  const port = envInstance.getEnvironmentVariable('PORT');
+  app.listen(parseInt(port), async () => {
+    console.log("server →", port);
+  });  
+})
+
+

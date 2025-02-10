@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import type {Users} from "@prisma/client";
 
-import { ZodError, userPropsAccountSchema } from "../../../schema/validation/user.validation";
 import { ErrorHandler } from '../../../templates/error';
 import { forgotPasswordTrigger,forgotPasswordSet } from "./forgotPassword.controller";
+import { userAccountSchema } from "@/schema/validation/user.validation";
 
 interface codeStruct extends Users {
     code: string
@@ -15,7 +15,7 @@ router
   .route("/")
   .get(async(req: Request, res: Response) => {
     try {
-      const data = userPropsAccountSchema.parse({serial:req.query.serial ?? " "});
+      const data = userAccountSchema.parse({serial:req.query.serial ?? " "});
       const response = await forgotPasswordTrigger(data);
       res.json({
         message:response
