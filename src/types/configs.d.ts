@@ -1,6 +1,4 @@
-"use strict";
-
-interface SendingCookieProps {
+interface TSendingCookieProps {
   httpOnly: boolean;
   secure: boolean;
   sameSite: string;
@@ -8,14 +6,14 @@ interface SendingCookieProps {
   path: string;
 }
 
-interface SendingHeaderProps {
+interface TSendingHeaderProps {
   "Content-Type": string;
   "access-control-allow-methods": string;
   "access-control-allow-headers": string;
   "access-control-allow-origin": string[];
 }
-//
-interface CorsConfigProps {
+
+interface TCorsConfigProps {
   origin: boolean;
   methods: string;
   preflightContinue: boolean;
@@ -26,8 +24,8 @@ interface CorsConfigProps {
   credentials: boolean;
 }
 
-interface CorsOptionsProps {
-  origin: string;
+interface TCorsOptionsProps {
+  origin: string | string[];
   credentials: boolean;
   optionsSuccessStatus: number;
   preflightContinue: boolean;
@@ -42,11 +40,30 @@ interface CorsOptionsProps {
   accessControlExposeHeaders: string;
 }
 
-interface SessionSettingsProps {
+interface TSessionSettingsProps {
   secret: string;
   saveUninitialized: boolean;
   resave: boolean;
   cookie: SendingCookie;
 }
 
-export type { SendingCookieProps, SendingHeaderProps, CorsConfigProps, CorsOptionsProps, SessionSettingsProps };
+interface TRateLimitConfigProps {
+  windowMs: number;
+  max: number;
+  message: string;
+}
+
+interface THelmetHsts {
+  maxAge: number;
+  includeSubDomains: boolean;
+  preload: boolean;
+}
+
+export type { 
+  TSendingCookieProps, 
+  TSendingHeaderProps, 
+  TCorsConfigProps, 
+  TCorsOptionsProps, 
+  TSessionSettingsProps, 
+  TRateLimitConfigProps, 
+  THelmetHsts };
