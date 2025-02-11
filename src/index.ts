@@ -36,18 +36,11 @@ app.use("/removeAccount", require("./features/auth/removeAccount/route"));
 app.use("/activeAccount", require("./features/auth/activateAccount/route"));
 app.use("/deactiveAccount", require("./features/auth/deactiveAccount/route"));
 
-
 // error handling
 app.use((err: Error, req: express.Request, res: express.Response) => {
   console.error(err.stack);
   res.status(500).json({ message: "Internal Server Error" });
 });
-
-/*
-  This is the startpoint of the server.
-  Mongo and Redis switch is provided here.
-  Only use the one you need and you may comment out or remove the switches as per your choice
-*/
 
 async function startUp() { 
   await envInstance.init();
