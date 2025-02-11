@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
 
-("use strict");
-
 const router = express.Router();
 
 const data = {
@@ -19,4 +17,3 @@ router
   });
 
 module.exports = router;
-//

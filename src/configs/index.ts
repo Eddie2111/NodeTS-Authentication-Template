@@ -1,6 +1,15 @@
-import { CorsConfigProps, CorsOptionsProps, SendingCookieProps, SendingHeaderProps, SessionSettingsProps } from "../types/configs.d";
+import { envInstance } from "@/lib/environment";
+import { 
+  TCorsConfigProps, 
+  TCorsOptionsProps, 
+  TSendingCookieProps, 
+  TSendingHeaderProps, 
+  TSessionSettingsProps,
+  TRateLimitConfigProps,
+  THelmetHsts,
+} from "@/types/configs.d";
 
-const sendingCookie = {
+const sendingCookie: TSendingCookieProps = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
@@ -8,16 +17,22 @@ const sendingCookie = {
   path: "/",
 };
 
-const sendingHeader = {
+const rateLimitConfig: TRateLimitConfigProps = {
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests, please try again later.",
+}
+
+const sendingHeader: TSendingHeaderProps = {
   "Content-Type": "text/json",
   "access-control-allow-origin": ["https://localhost:3100"],
   "access-control-allow-methods": "GET, POST",
   "access-control-allow-headers": "Origin, Authorization",
 };
-//
-const corsConfig = {
+
+const corsConfig: TCorsConfigProps = {
   origin: true,
-  methods: "GET,POST", //GET,HEAD,PUT,PATCH,POST,DELETE
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 200,
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -26,8 +41,14 @@ const corsConfig = {
   credentials: true,
 };
 
-const corsOptions = {
-  origin: "http://localhost:3000",
+const helmetHsts: THelmetHsts = {
+  maxAge: 31536000,
+  includeSubDomains: true,
+  preload: true,
+}
+
+const corsOptions: TCorsOptionsProps = {
+  origin: [ "http://localhost:3000", /* add other cors origins here, basically your frontend url's should be here */ ],
   credentials: true,
   optionsSuccessStatus: 200,
   preflightContinue: true,
@@ -42,8 +63,8 @@ const corsOptions = {
   accessControlExposeHeaders: "Content-Type",
 };
 
-const sessionSettings = {
-  secret: process.env.SECRET,
+const sessionSettings: TSessionSettingsProps = {
+  secret: envInstance.getEnvironmentVariable('SESSION_SECRET'),
   saveUninitialized: true,
   resave: false,
   cookie: {
@@ -51,4 +72,12 @@ const sessionSettings = {
   },
 };
 
-export { sendingHeader, sendingCookie, corsConfig, sessionSettings, corsOptions };
+export { 
+  sendingHeader, 
+  sendingCookie, 
+  rateLimitConfig, 
+  corsConfig, 
+  sessionSettings, 
+  corsOptions,
+  helmetHsts,
+};
